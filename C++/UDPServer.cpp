@@ -45,15 +45,18 @@ int main()
     char RecvBuf[BufLen];
     ZeroMemory(RecvBuf, BufLen);
 
+    sockaddr_in ClientAddr;
+    int ClientAddr_len = sizeof(ClientAddr);
+
     cout << "准备接收来自客户端数据..." << endl;
 
-    if (SOCKET_ERROR == recvfrom(ServerSocket, RecvBuf, BufLen, 0, (SOCKADDR *)&ServerAddr, &ServerAddr_len))
+    if (SOCKET_ERROR == recvfrom(ServerSocket, RecvBuf, BufLen, 0, (SOCKADDR *)&ClientAddr, &ClientAddr_len))
     {
         closesocket(ServerSocket);
         WSACleanup();
         return false;
     }
-      cout << "服务器接收消息成功!" << endl
+    cout << "服务器接收消息成功!" << endl
          << endl;
 
     // 6 发送数据(sendto)
@@ -64,7 +67,7 @@ int main()
         *q++ = *p++ - 'a' + 'A';
 
     cout << "准备发送数据报给客户端..." << endl;
-    if (SOCKET_ERROR == sendto(ServerSocket, SendBuf, BufLen, 0, (SOCKADDR *)&ServerAddr, ServerAddr_len))
+    if (SOCKET_ERROR == sendto(ServerSocket, SendBuf, BufLen, 0, (SOCKADDR *)&ClientAddr, ClientAddr_len))
     {
         closesocket(ServerSocket);
         WSACleanup();
